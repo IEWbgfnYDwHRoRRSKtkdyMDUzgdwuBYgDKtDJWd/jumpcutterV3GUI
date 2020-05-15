@@ -29,7 +29,7 @@ And you're done! You can now run the executable.
     > Note: You can check this by running `python -c "import struct; print(struct.calcsize('P')*8)"`. Should return `64`.
 
 3. Using pip3, install the modules in [requirements.txt](https://github.com/seaty6/jumpcutterV2/releases/latest/download/requirements.txt)
-4. Install ffmpeg and add it to PATH ([ffmpeg download] (https://www.ffmpeg.org/download.html) and a [Guide](https://windowsloop.com/install-ffmpeg-windows-10/))
+4. Install ffmpeg and add it to PATH \([ffmpeg download] (https://www.ffmpeg.org/download.html) and a [Guide](https://windowsloop.com/install-ffmpeg-windows-10/)\)
 5. Done
 
 # Differences
