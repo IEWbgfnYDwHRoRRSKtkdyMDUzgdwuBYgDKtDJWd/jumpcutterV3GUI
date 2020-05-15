@@ -37,12 +37,18 @@ silentThreshold = args.silentThreshold
 frame_margin = args.frameMargin
 
 cap = cv2.VideoCapture(videoFile)
+#In case files were left behind
+try:
+    os.remove('output.wav')
+    os.remove('spedup.mp4')
+    os.remove('spedupAudio.wav')
+except:
+    pass
 
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 fps = round(cap.get(cv2.CAP_PROP_FPS))
-
 extractAudio = 'ffmpeg -i "{}" -ab 160k -ac 2 -ar 44100 -vn output.wav'.format(videoFile)
 subprocess.call(extractAudio, shell=True)
 
@@ -87,6 +93,7 @@ maxVolume = getMaxVolume(audioData)
 y = np.zeros_like(audioData, dtype=np.int16)
 yPointer = 0
 frameBuffer = []
+
 
 while (cap.isOpened()):
     ret, frame = cap.read()
@@ -154,11 +161,11 @@ outFile = "{}_faster{}".format(videoFile[:videoFile.rfind('.')],videoFile[videoF
 command = "ffmpeg -y -i spedup.mp4 -i spedupAudio.wav -c:v copy -c:a aac {}".format(outFile)
 subprocess.call(command, shell=True)
 
-print('Finished.')
-timeLength = round(time.time() - startTime, 2)
-minutes = timedelta(seconds=(round(timeLength)))
-print(f'took {timeLength} seconds ({minutes})')
-
 os.remove('output.wav')
 os.remove('spedup.mp4')
 os.remove('spedupAudio.wav')
+timeLength = round(time.time() - startTime, 2)
+minutes = timedelta(seconds=(round(timeLength)))
+print('Finished.')
+print(f'Took {timeLength} seconds ({minutes})')
+print(f'Removed {math.floor(skipped / fps)} seconds from a {math.floor(framesProcessed / fps)} second video.')
