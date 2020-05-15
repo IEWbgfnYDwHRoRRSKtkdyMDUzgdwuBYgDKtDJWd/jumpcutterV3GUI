@@ -52,7 +52,7 @@ sampleRate, audioData = wavfile.read('output.wav')
 skipped = 0
 nFrames = 0
 channels = int(audioData.shape[1])
-
+framesProcessed = 0
 def getMaxVolume(s):
     maxv = np.max(s)
     minv = np.min(s)
@@ -95,7 +95,9 @@ while (cap.isOpened()):
     # since samplerate is in seconds, I need to convert this to second as well
     currentTime = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000
     audioSampleStart = math.floor(currentTime * sampleRate)
-
+    
+    # more accurate frame counting
+    framesProcessed += 1
     # audioSampleStart + one frame worth of samples
     audioSampleEnd = min((audioSampleStart + ((sampleRate // fps) * frame_margin)),(len(audioData)))
     switchEnd = (audioSampleStart + ((sampleRate // fps)))
@@ -137,9 +139,9 @@ while (cap.isOpened()):
             switchStart = switchEnd
 
         normal = 1
-    if skipped % 500 == 0:
-        print("{} frames inspected".format(skipped))
-        skipped += 1
+    if framesProcessed % 500 == 0:
+        print("{} frames processed".format(framesProcessed))
+        print("{} frames skipped".format(skipped))
 
 y = y[:yPointer]
 wavfile.write("spedupAudio.wav", sampleRate, y)
