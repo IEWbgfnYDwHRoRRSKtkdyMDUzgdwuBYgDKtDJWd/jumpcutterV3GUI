@@ -2,7 +2,7 @@
 # JumpCutterV3GUI
 Automatically cuts silent sections of videos - Originally inspired by carykh.
 
-![image]([https://user-images.githubusercontent.com/18372532/82138899-f1ed6180-97f1-11ea-8ae3-d150abef08be.png)
+![image](https://user-images.githubusercontent.com/18372532/82138899-f1ed6180-97f1-11ea-8ae3-d150abef08be.png)
 
 You can select an entire folder at once for a batch of videos (probably lectures tbh) or select an individual file to process - now with a much more efficient encoding process than the original version released by Carykh, and cutting processing times by over 90% for files over an hour long! 
 
