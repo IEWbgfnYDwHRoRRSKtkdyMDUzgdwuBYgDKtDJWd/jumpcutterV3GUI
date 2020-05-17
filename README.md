@@ -1,9 +1,14 @@
 
-# JumpcutterV3GUI
+# JumpCutterV3GUI
 Automatically cuts silent sections of videos - Originally inspired by carykh.
 
-Carykh's video: https://www.youtube.com/watch?v=DQ8orIurGxw
+![image]([https://user-images.githubusercontent.com/18372532/82138899-f1ed6180-97f1-11ea-8ae3-d150abef08be.png)
 
+You can select an entire folder at once for a batch of videos (probably lectures tbh) or select an individual file to process - now with a much more efficient encoding process than the original version released by Carykh, and cutting processing times by over 90% for files over an hour long! 
+
+Set the values for how fast you want silent parts of your lecture to be, what the threshold is for "quiet speech" and how long pauses have to be before the program starts speeding that section up - more detailed explanations of these values can be found in the [arguments](#arguments) section.
+
+Carykh's video: https://www.youtube.com/watch?v=DQ8orIurGxw
 Carykh's program: https://github.com/carykh/jumpcutter
 
 # Windows Setup (GUI)
@@ -86,3 +91,8 @@ Using shorts:
 
 # Heads up
 Based on Python3
+
+# Credits:
+Thanks to [gusals3587](https://github.com/gusals3587/jumpcutterV2) for reworking the code to be much more optimized
+
+Thanks to [WyattBlue](https://github.com/WyattBlue/jumpcutterV2) for adding back the all but the frame_margin parameter
