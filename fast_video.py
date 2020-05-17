@@ -27,6 +27,8 @@ parser.add_argument('--silentThreshold', '-t', type=float, default=0.04,
     help='the volume that frames audio needs to surpass to be sounded. It ranges from 0 to 1.')
 parser.add_argument('--frameMargin', '-m', type=int, default=1,
     help='tells how many frames on either side of speech should be included.')
+parser.add_argument('--constantFPS', '-f', type=int, default=0,
+    help='fixes audio desync popping by setting the video file to a constant fps.')
 args = parser.parse_args()
 
 startTime = time.time()
@@ -35,6 +37,7 @@ videoFile = args.videoFile
 NEW_SPEED = [args.silentSpeed, 1]
 silentThreshold = args.silentThreshold
 frame_margin = args.frameMargin
+constantFPS = args.constantFPS
 
 cap = cv2.VideoCapture(videoFile)
 #In case files were left behind
