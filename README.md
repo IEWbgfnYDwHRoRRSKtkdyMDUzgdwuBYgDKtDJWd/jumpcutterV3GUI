@@ -85,9 +85,9 @@ Using shorts:
 ## Argument Values
 | Argument | Default Value | Why adjust? |
 | -------- | ------------- | ---------- |
-| `silentSpeed` | 99999 | Lower for less "jump" |
+| `silentSpeed` | 99999 | Lower for less "jump" - This is the speed the video will play when there is no sound. 99999 works for jumpcutting, and 4-5 works better for lectures.|
 | `silentThreshold` | 0.04 | Vary between 0-1 for less/more "silence" (Higher values mean more of the video is cut out) |
-| `frameMargin` | 1 | Increase by whole numbers to require larger pauses before cutting out a section |
+| `frameMargin` | 1 | Increase by whole numbers to require larger pauses before cutting out a section (If your professor takes breaks between his words, this will prevent cutting every gap between every word. |
 
 # Heads up
 Based on Python3
