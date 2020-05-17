@@ -18,7 +18,6 @@ from os import walk
 from datetime import timedelta
 import subprocess
 import argparse
-import glob
 from os import listdir
 from os.path import isfile, join
 import pathlib
@@ -41,6 +40,10 @@ stemCommand = "python fast_video.py"
 # Action after pressing ... button to selectfile
 def selectFileItem():
     global videoFileGUI
+    folderLocation.delete(0, END)
+    fileLocation.delete(0, END)
+    videoFolderGUI = ""
+    videoFileGUI = ""
     # Open file selecter and making path variable
     videoFileGUI = filedialog.askopenfilename(title = "Select Media File",filetypes = (("Video Files",".mp4 .mp4v .avi .mkv .m4v .webm"),("all files","*.*")))
     fileLocation.insert(END, videoFileGUI)
@@ -49,22 +52,17 @@ def selectFileItem():
 
 def selectFolderItem():
     global videoFolderGUI
+    global videoFileGUI
     # Open file selecter and making path variable
+    folderLocation.delete(0, END)
+    fileLocation.delete(0, END)
+    videoFolderGUI = ""
+    videoFileGUI = ""
     videoFolderGUI = filedialog.askdirectory(title = "Select a Folder")
     folderLocation.insert(END, videoFolderGUI)
     print(videoFolderGUI)
     global videoFolderGUIArray
     videoFolderGUIArray = []
-   # f = []
-   # onlyfiles = [f for f in listdir(videoFolderGUI) if isfile(join(videoFolderGUI, f))]
-   # print(videoFileGUI)
-   # print(*onlyfiles)
-   # print(glob.glob(videoFolderGUI+ "*"))
-  
-    #paths = [os.path.join(videoFileGUI, fn) for fn in next(os.walk(videoFileGUI))[2]]
-    #paths = [entry for entry in os.scandir(videoFileGUI) if entry.is_file()]
-    #print(paths)
-
     for folder, subs, files in os.walk(videoFolderGUI):
       for filename in files:
         videoFolderGUIArray.append(os.path.abspath(os.path.join(folder, filename)))
@@ -134,21 +132,32 @@ silentSpeedGUI.grid(column=4, row=9)
 def execute():
     global videoFolderGUI
     global videoFolderGUIArray
+    global videoFileGUI
+    
     if ((videoFileGUI != "") and (videoFolderGUI == "")):
         print("Processing file" + videoFileGUI)
+        messagebox.showinfo("Message", "This window will be unresponsive while the video is being shortened. View the shell for details on progress.")
         fast_video_function(videoFileGUI, float(silentSpeedGUI.get()), float(silentThresholdGUI.get()), int(frameMarginGUI.get()))
+        videoFileGUI = ""
     elif ((videoFileGUI != "") and (videoFolderGUI != "")):
         messagebox.showerror("Error", "You can only either have a file, or a folder, but not both.")
+        return
     elif ((videoFileGUI == "") and (videoFolderGUI == "")):
         messagebox.showerror("Error", "You must enter at least one file or folder to process")
+        return
     elif ((videoFileGUI == "") and (videoFolderGUI != "")):
         print("Processing a folder")
+        messagebox.showinfo("Message", "This window will be unresponsive while the folder of videos is being shortened. View the shell for details on progress. - This may take a while.")
         videoFolderGUI = ""
         for x in videoFolderGUIArray:
             print("Processing Video" + x)
             fast_video_function(x, float(silentSpeedGUI.get()), float(silentThresholdGUI.get()), int(frameMarginGUI.get()))
     else:
         messagebox.showerror("Something is broken","The fact that you're seeing this means that something is very wrong - this shouldn't ever be visible. Restart and try again?")
+    videoFileGUI = ""
+    videoFolderGUI = ""
+    folderLocation.delete(0, END)
+    fileLocation.delete(0, END)
     messagebox.showinfo("Success!", "All file(s) have been shortened.")
     
     
