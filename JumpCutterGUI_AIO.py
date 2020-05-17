@@ -14,23 +14,65 @@ import math
 import sys
 import time
 import os
+from os import walk
 from datetime import timedelta
 import subprocess
 import argparse
-
+import glob
+from os import listdir
+from os.path import isfile, join
+import pathlib
 
 window = Tk()
 window.title("Jumpcutter GUI")
 window.geometry('320x330')
 window.resizable(False, False)
 
-
 videoFileGUI = ""
+videoFolderGUI = ""
 silentSpeedGUI = ""
 silentThresholdGUI = ""
 frameMarginGUI = ""
 stemCommand = "python fast_video.py"
 
+
+
+
+# Action after pressing ... button to selectfile
+def selectFileItem():
+    global videoFileGUI
+    # Open file selecter and making path variable
+    videoFileGUI = filedialog.askopenfilename(title = "Select Media File",filetypes = (("Video Files",".mp4 .mp4v .avi .mkv .m4v .webm"),("all files","*.*")))
+    fileLocation.insert(END, videoFileGUI)
+    
+    
+
+def selectFolderItem():
+    global videoFolderGUI
+    # Open file selecter and making path variable
+    videoFolderGUI = filedialog.askdirectory(title = "Select a Folder")
+    folderLocation.insert(END, videoFolderGUI)
+    print(videoFolderGUI)
+    global videoFolderGUIArray
+    videoFolderGUIArray = []
+   # f = []
+   # onlyfiles = [f for f in listdir(videoFolderGUI) if isfile(join(videoFolderGUI, f))]
+   # print(videoFileGUI)
+   # print(*onlyfiles)
+   # print(glob.glob(videoFolderGUI+ "*"))
+  
+    #paths = [os.path.join(videoFileGUI, fn) for fn in next(os.walk(videoFileGUI))[2]]
+    #paths = [entry for entry in os.scandir(videoFileGUI) if entry.is_file()]
+    #print(paths)
+
+    for folder, subs, files in os.walk(videoFolderGUI):
+      for filename in files:
+        videoFolderGUIArray.append(os.path.abspath(os.path.join(folder, filename)))
+    print(videoFolderGUIArray)
+    
+
+
+    
 # First group of widgets - select original file and place to save jumpcutted version
 group1 = LabelFrame(window, text="Main", padx=1, pady=1)
 group1.grid(padx=1, pady=1)
@@ -41,35 +83,27 @@ labelLocalFile.grid(column=0, row=1)
 fileLocation = Entry(group1,width=48)
 fileLocation.grid(column=0, row=2)
 
-
-
-# Action after pressing ... button to selectfile
-def selectFileItem():
-    # Open file selecter and making path variable
-    global videoFileGUI
-    videoFileGUI = filedialog.askopenfilename()
-    # Writing path to label
-    fileLocation.insert(END, videoFileGUI)
-    # Getting table with base filename
-    baseFileName = os.path.basename(videoFileGUI)
-    # Variable only with extension
-    extension = os.path.splitext(baseFileName)[1]
-    # Original path to file without file and extension
-    originalPath = videoFileGUI.replace(baseFileName, '')
-    # Combining original Path with filename (without extension)
-    finalname = (originalPath + os.path.splitext(baseFileName)[0])
-    # Inserting original Path with filename + _jumpcut suffix + original extension
-
-
 # Button to open file item selection box
 selectFile = Button(group1, text="...", command=selectFileItem)
-selectFile.grid(column=2, row=2)
+selectFile.grid(column=1, row=2)
 
+
+labelLocalFolder = Label(group1, text="Video Folder Location")
+labelLocalFolder.grid(column=0, row=3)
+
+folderLocation = Entry(group1,width=48)
+folderLocation.grid(column=0, row=4)
+
+
+selectFolder = Button(group1, text="...", command=selectFolderItem)
+selectFolder.grid(column=1, row=4)
 
 labelLocalFile.grid()
 fileLocation.grid()
 selectFile.grid()
-
+labelLocalFolder.grid()
+folderLocation.grid()
+selectFolder.grid()
 
 # Group 2 - it is for general manipulation, FPS, sounded speed, silent threshold, silent speed
 group2 = LabelFrame(window, text="General", padx=1, pady=1)
@@ -96,12 +130,29 @@ silentSpeedGUI.grid(column=4, row=9)
 
 
 
-
-
 # Action after clicking start button
 def execute():
-    fast_video_function(videoFileGUI, float(silentSpeedGUI.get()), float(silentThresholdGUI.get()), int(frameMarginGUI.get()))
-
+    global videoFolderGUI
+    global videoFolderGUIArray
+    if ((videoFileGUI != "") and (videoFolderGUI == "")):
+        print("Processing file" + videoFileGUI)
+        fast_video_function(videoFileGUI, float(silentSpeedGUI.get()), float(silentThresholdGUI.get()), int(frameMarginGUI.get()))
+    elif ((videoFileGUI != "") and (videoFolderGUI != "")):
+        messagebox.showerror("Error", "You can only either have a file, or a folder, but not both.")
+    elif ((videoFileGUI == "") and (videoFolderGUI == "")):
+        messagebox.showerror("Error", "You must enter at least one file or folder to process")
+    elif ((videoFileGUI == "") and (videoFolderGUI != "")):
+        print("Processing a folder")
+        videoFolderGUI = ""
+        for x in videoFolderGUIArray:
+            print("Processing Video" + x)
+            fast_video_function(x, float(silentSpeedGUI.get()), float(silentThresholdGUI.get()), int(frameMarginGUI.get()))
+    else:
+        messagebox.showerror("Something is broken","The fact that you're seeing this means that something is very wrong - this shouldn't ever be visible. Restart and try again?")
+    messagebox.showinfo("Success!", "All file(s) have been shortened.")
+    
+    
+    
 def fast_video_function(videoFile, NEW_SPEEDfloat, silentThreshold, frameMargin):
     global NEW_SPEED
     NEW_SPEED = [NEW_SPEEDfloat, 1]
