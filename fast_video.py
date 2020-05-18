@@ -48,6 +48,11 @@ try:
 except:
     pass
 
+if constantFPS!=0:
+    setconst = 'ffmpeg -i "{}" -r "{}" "{}_const{}"'.format(videoFile, constantFPS, videoFile[:videoFile.rfind('.')], videoFile[videoFile.rfind('.'):])
+    subprocess.call(setconst, shell=True)
+    videoFile = "{}_const{}".format(videoFile[:videoFile.rfind('.')], videoFile[videoFile.rfind('.'):])
+
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
