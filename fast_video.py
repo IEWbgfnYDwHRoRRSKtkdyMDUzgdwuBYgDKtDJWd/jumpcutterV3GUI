@@ -166,7 +166,7 @@ out.release()
 cv2.destroyAllWindows()
 
 outFile = "{}_faster{}".format(videoFile[:videoFile.rfind('.')],videoFile[videoFile.rfind('.'):])
-command = "ffmpeg -y -i spedup.mp4 -i spedupAudio.wav -c:v copy -c:a aac {}".format(outFile)
+command = "ffmpeg -y -i spedup.mp4 -i spedupAudio.wav -c:v h264_nvenc -rc:v vbr_hq -cq:v 36 -b:v 500k -maxrate:v 1000k -profile:v high $fpsblankforkeep \ {}".format(outFile)
 subprocess.call(command, shell=True)
 
 os.remove('output.wav')
